@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "MCP de pesquisa web, Google Ads e estratégia de conteúdo",
+  "description": "MCP para SEO por SERP, análise de sites públicos e estratégia de conteúdo",
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1",
     "build": "next build",
@@ -13,7 +13,6 @@
     "test": "vitest run",
     "mcp:stdio": "tsx src/mcp/stdio.ts",
     "verify": "tsx scripts/verify.ts",
-    "search-console:authorize": "tsx scripts/authorize-search-console.ts",
     "oauth:prepare": "node scripts/prepare-auth0.mjs",
     "vercel:prepare-env": "node scripts/prepare-vercel-env.mjs",
     "setup": "node scripts/setup.mjs",

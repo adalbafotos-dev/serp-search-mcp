@@ -41,9 +41,9 @@ O endpoint HTTP funciona sem sessão persistente e devolve respostas JSON. Use u
 
 A pasta `plugin/` contém os manifestos portáteis `plugin.json` e `mcp.json`, a skill `skills/content-research/SKILL.md` e os arquivos de compatibilidade Codex `.codex-plugin/plugin.json` e `.mcp.json`. Os dois formatos apontam para o mesmo servidor e não contêm segredos. [Empacotar plugins](https://developers.openai.com/plugins/build/plugins).
 
-Os manifestos MCP apontam para `https://serp-search-mcp.vercel.app/api/mcp`. O portátil declara API key com esquema Bearer em `extensions.com.openai.auth`; essa declaração não contém o token e não substitui OAuth no ChatGPT. Se trocar de hospedagem, sincronize a URL nos dois manifestos.
+Os manifestos MCP apontam para `https://serp-search-mcp.vercel.app/api/mcp` e declaram OAuth com o cliente Auth0 existente, `client_secret_post` e `research:read`. O Client Secret não faz parte do pacote. Se trocar de hospedagem, sincronize a URL nos dois manifestos.
 
-O campo `bearer_token_env_var: "MCP_AUTH_TOKEN"` evita embutir o segredo e é suportado no formato de MCP de plugins documentado pela OpenAI. [Autenticar MCPs de plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins). Para uma conexão exclusivamente OAuth, remova esse campo e deixe o cliente realizar a autorização. O pacote não instala o servidor, Node.js ou dependências e não inclui `.env.local`.
+O pacote não instala o servidor, Node.js ou dependências e não inclui `.env.local`. A instalação desktop/Codex é separada da conexão MCP personalizada do ChatGPT web. Os links e IDs estão em [plugin-private.md](plugin-private.md). Para testar no ChatGPT, use o plugin que contém **Aplicativos**, **Gerenciar** e **Testar no chat**.
 
 ## ChatGPT remoto: HTTPS e OAuth
 
@@ -76,7 +76,7 @@ O projeto publica metadata em `/.well-known/oauth-protected-resource` e `/.well-
 
 ### Adicionar no ChatGPT
 
-Na superfície que oferece plugins personalizados, siga o fluxo oficial: **Plugins → + → Add custom MCP server**, informe a URL HTTPS `/api/mcp`, escolha OAuth, conclua a autorização e crie o plugin. Depois, instale-o nos plugins pessoais e teste em uma nova conversa Work com `@` e o nome do plugin. [Quickstart oficial](https://developers.openai.com/plugins/quickstart). As opções e permissões podem depender da conta e do workspace; verifique a disponibilidade na sua interface.
+Na superfície que oferece plugins personalizados, siga o fluxo oficial: **Plugins → + → Add custom MCP server**, informe a URL HTTPS `/api/mcp`, escolha OAuth e crie o plugin. Instale-o, conclua **Conectar** e use **Testar no chat** para iniciar uma conversa com a conexão correta selecionada. Essa instalação foi verificada no modo Chat da conta proprietária. [Adicionar MCP personalizado](https://developers.openai.com/api/docs/guides/custom-mcp-server). As opções e permissões podem depender da conta e do workspace.
 
 O formulário oficial aceita OAuth, autenticação ausente ou acesso misto. Embora o schema de plugins descreva API keys, o portal não oferece campo de token Bearer para esse fluxo. [Limitações de autenticação do portal](https://developers.openai.com/plugins/deploy/submission).
 
@@ -85,6 +85,8 @@ O formulário oficial aceita OAuth, autenticação ausente ou acesso misto. Embo
 Primeiro liste as ferramentas. Em seguida peça: “Pesquise tendências de conteúdo sobre meu tema no Brasil e mostre as fontes”. Para Google Ads, valide uma consulta curta de palavras-chave depois de configurar as credenciais em [google-ads-setup.md](google-ads-setup.md). Uma conexão MCP válida não garante que as credenciais de cada provedor estejam corretas.
 
 - `401`: verifique token do cliente, issuer, audience e validade do JWT.
+- Login Auth0 concluído, mas autenticação pendente no ChatGPT: confira `MCP_AUTH_MODE`. O modo `bearer` recusa tokens OAuth mesmo com as demais variáveis preenchidas. Use `oauth` ou `both`, faça novo deploy e clique em **Gerenciar → Reconectar → Atualizar ferramentas**.
+- Ferramenta ausente na conversa: confirme o plugin correto e a conta proprietária. Uma conversa aberta antes da atualização pode precisar de um novo teste por **Testar no chat**.
 - Erro de scope: autorize `research:read` no provedor e na conexão.
 - Discovery/PKCE: confira as URLs públicas de metadata e `S256` anunciado pelo provedor.
 - Timeout/conexão recusada: confirme porta, processo Next.js e alcance da URL pelo cliente.

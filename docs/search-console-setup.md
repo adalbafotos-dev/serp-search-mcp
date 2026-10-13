@@ -1,4 +1,6 @@
-# Google Search Console no SERP Search MCP
+# Google Search Console — guia histórico
+
+Integração retirada do catálogo ativo a pedido do proprietário. Para analisar sites públicos de clientes e concorrentes, use [SEO por SERP](seo-serp.md). Não é necessário seguir este cadastro ou gerar credenciais Search Console. O código do provedor permanece no repositório como referência, sem registro no MCP.
 
 Esta integração lê diretamente a API Google; não depende de uma assinatura ou do código do GSC Wizard. Ela acrescenta quatro ferramentas somente leitura: search_console_sites, search_console_performance, search_console_inspect_url e search_console_sitemaps. GA4, Merchant Center, Bing, Yandex, colaboração, previsões e experimentos do outro produto não fazem parte desta implementação.
 

@@ -1,44 +1,43 @@
 # Plugin privado e verificação de produção
 
-Criado pelo Plugin Creator em 13/10/2026, versão 1.0.1, escopo pessoal USER e visibilidade PRIVATE.
+## Instalações
 
-- Nome exibido: SERP Search MCP.
-- Plugin: `plugins_6acde74815a881919ff95c78d4c6402a`.
-- Release atual OAuth (1.0.4): `pluginrel_6ace84e479e88191a8a07427b8891242`.
-- Link: https://chatgpt.com/plugins/plugins_6acde74815a881919ff95c78d4c6402a.
+Há um pacote desktop/Codex e uma conexão MCP nativa do ChatGPT, ambos pessoais e privados, apontando para o mesmo servidor.
+
+- ChatGPT web: https://chatgpt.com/plugins/plugin_asdk_app_6ace8caa41fc8191a34308f06d2accbf.
+- Aplicativo nativo: `asdk_app_6ace8caa41fc8191a34308f06d2accbf`.
+- Pacote desktop/Codex, com a habilidade content-research: https://chatgpt.com/plugins/plugins_6acde74815a881919ff95c78d4c6402a.
+- Pacote: versão 1.0.4, release `pluginrel_6ace84e479e88191a8a07427b8891242`.
 - MCP: https://serp-search-mcp.vercel.app/api/mcp.
-- Pacote local: `artifacts/serp-search-mcp-private.zip`.
+- Vercel: https://vercel.com/adalbadevs-projects/serp-search-mcp.
 
-Use os IDs acima, sem modificá-los, em uma atualização pelo Plugin Creator. Não crie outra cópia para corrigir a conexão.
+Preserve os IDs, a hospedagem e a audiência privada ao atualizar. Para usar no ChatGPT, abra a instalação web e clique em Gerenciar ou Testar no chat. O pacote com abertura no desktop não substitui a conexão OAuth web.
 
-## Resultado do teste
+## OAuth e correção
 
-O cliente oficial MCP SDK conectou por Streamable HTTP à Vercel com o token existente no ambiente local. Os testes passaram: catálogo com nove ferramentas, dois prompts e um recurso; planejamento editorial; análise de uma página HTML pública; pesquisa DataForSEO com cinco resultados; cinco ideias de palavras-chave do Google Ads; métricas de uma palavra-chave do Google Ads. Chamadas sem credencial retornaram 401. O token não foi exibido nem incluído no pacote.
+O Auth0 usa `adalbapro.us.auth0.com`, API `6ace8288bd1db205b4811f43`, Identifier `https://serp-search-mcp.vercel.app/api/mcp`, JWT RS256 e permissão `research:read`. O cliente foi autorizado somente para acesso delegado de leitura; não recebeu acesso anônimo ou de máquina.
 
-Esse teste verifica o servidor de produção por MCP. Ainda não verifica uma chamada pelo plugin instalado dentro de um chat. Notícias, desempenho de campanhas e comparações completas não foram testados ao vivo nesta verificação.
+O callback é `https://chatgpt.com/connector_platform_oauth_redirect`. A conexão de email/senha foi promovida ao nível de domínio após aprovação do titular, com cadastros públicos bloqueados. O titular criou a própria senha e preencheu o Client Secret diretamente no ChatGPT. Segredos não foram extraídos, exibidos ou incluídos no pacote. O cliente usa client_secret_post, PKCE S256 e OIDC desabilitado.
 
-## Instalação e conexão
+O login Auth0 já funcionava, mas a Vercel ainda tinha `MCP_AUTH_MODE=bearer`, que recusa tokens OAuth. Em 13/10/2026, o titular alterou para `both` e fez redeploy manual. A produção ficou Ready no deployment `EyMgz7Fo9`, branch main, commit `1af576c92811ccc03a50a5fb8bc94e33fc40c3c3`.
 
-Abra o link acima, selecione +/Instalar e inicie uma nova conversa Work com @SERP Search MCP. A instalação não autentica automaticamente o MCP. O pacote declara o Bearer fixo que o servidor aceita atualmente, sem armazenar o segredo.
+Depois foi executado Gerenciar → Reconectar → Atualizar ferramentas no ChatGPT. O aviso de autenticação pendente desapareceu e o catálogo passou a listar treze ferramentas de leitura. A Vercel registrou respostas 200/202 do MCP às 17:39 de Brasília.
 
-Para o ChatGPT remoto, falta configurar OAuth com um provedor de autorização compatível e atualizar a declaração de autenticação deste mesmo plugin. As variáveis OAuth vazias não criam esse provedor. O token de acesso MCP é separado das credenciais DataForSEO e Google Ads que a Vercel já utiliza. Consulte [o guia do projeto](connections.md), [a autenticação oficial](https://developers.openai.com/plugins/build/auth) e [a instalação oficial](https://developers.openai.com/plugins/quickstart).
+## Teste no ChatGPT
 
-Após concluir a conexão, peça “Pesquise marketing de conteúdo no Brasil e cite cinco fontes” e confirme uma chamada real a search_web. Somente então a verificação de uso dentro do chat estará completa.
+Conversa: https://chatgpt.com/c/6ace9787-2928-83e9-abaa-0090d663831d.
 
-## Extensão Search Console e diagnóstico do chat
+Duas chamadas foram concluídas dentro do ChatGPT em 13/10/2026:
 
-Em 13/10/2026, as ferramentas instaladas neste chat Codex retornaram dados ao vivo por search_web (DataForSEO, consulta AdalbaPro, Brasil, português, três resultados) e google_ads_keyword_metrics (uma palavra-chave). Esse resultado confirma a conexão deste ambiente; não confirma disponibilidade em outro chat/workspace do ChatGPT.
+- `search_web`: query `site:adalbapro.com.br`, país br, idioma pt, limit 1. DataForSEO retornou a página adalbapro.com.br, título “Ferramentas AdalbaPro | Pré-cadastro”, coleta às 17:42:18 de Brasília. A posição na consulta site: não comprova ranking para uma keyword comercial.
+- `google_ads_keyword_metrics`: “fotografia profissional”, Brasil 2076, português 1014, Google Search. Google Ads v25 retornou média mensal de 2.400 pesquisas, competição publicitária LOW e índice 33, coleta às 17:42:19 de Brasília. São estimativas publicitárias, não dificuldade SEO ou tráfego do site.
 
-O código local passou a expor treze ferramentas, incluindo propriedades, desempenho, inspeção de URL e sitemaps do Search Console. Foram verificados 129 testes, build de produção e inicialização SDK HTTP/stdio com treze ferramentas. Search Console não foi consultado ao vivo: ainda requer ativação da API e consentimento Google. O deploy de produção atual continua com nove ferramentas até commit/push/redeploy manual.
+Comprovações locais: `artifacts/chatgpt-mcp-13-tools.png` e `artifacts/chatgpt-mcp-test-success.png`. Consultas podem consumir cotas dos provedores.
 
-A release 1.0.2 atualiza as instruções para diferenciar SERP observada, estimativas Ads e desempenho orgânico da propriedade, e verificar o catálogo antes de usar os novos métodos. A identidade, apresentação, audiência privada e configuração MCP existentes foram preservadas e verificadas após o upload.
+## Limites
 
-O tenant adalbapro.us.auth0.com publicou discovery HTTPS, issuer, JWKS e PKCE S256 confirmados. Os dados públicos OAuth foram preenchidos em .env.local. A habilitação e publicação da conexão OAuth aguardam User ID autorizado, método de autenticação do cliente, configuração da API/escopos/callback e importação das variáveis na Vercel. Não se deve considerar o ChatGPT conectado apenas porque o discovery respondeu.
+O teste confirmou OAuth, catálogo, DataForSEO e métricas históricas Ads no ChatGPT. Não validou todas as operações.
 
-Na verificação seguinte, a metadata de produção passou a responder 200 com o issuer Auth0 e research:read, e uma chamada sem credencial continuou retornando 401. O painel do aplicativo confirmou Client Secret (Post). A release 1.0.3 passou a declarar OAuth com o Client ID existente e client_secret_post; os manifestos e apresentação foram conferidos após o upload. Nenhum Client Secret foi lido, transferido ou incluído no pacote.
+O catálogo de 13 ferramentas acima descreve a verificação histórica de produção. A revisão atual substitui esse catálogo por 10 ferramentas de SEO e conteúdo: retira Search Console e campanhas, e acrescenta check_serp_rank e audit_seo. O deploy da revisão é manual. Veja [SEO por SERP](seo-serp.md).
 
-Foi cadastrada no Auth0 a API SERP Search MCP, Identifier https://serp-search-mcp.vercel.app/api/mcp, assinatura RS256, autorização por aplicativo e acesso de máquina desabilitado. O escopo research:read foi definido. ID da API: 6ace8288bd1db205b4811f43. O Auth0 também gerou automaticamente uma Test Application; não foi concedido acesso a ela. A autorização do aplicativo principal para pesquisa foi preparada e aguarda a confirmação de acesso exigida pela ferramenta de navegador. Callback, login e teste OAuth dentro do ChatGPT ainda estão pendentes.
-
-A release 1.0.4 declara oidcEnabled=false porque aplicativos de terceiros estritos do Auth0 não suportam escopos OIDC ou /userinfo. O fluxo continua OAuth com PKCE e scope research:read; issuer, audience, assinatura e subject continuam sendo validados pelo MCP. O formulário ChatGPT foi preparado com cliente definido pelo usuário, client_secret_post, research:read e OIDC desabilitado. O callback exibido pelo host foi https://chatgpt.com/connector_platform_oauth_redirect; ele ainda precisa constar na lista de callbacks do aplicativo Auth0. O campo Segredo do cliente OAuth ficou vazio para preenchimento pelo usuário.
-
-A tela do plugin empacotado mostra a instalação e o link para desktop. Para habilitar as ferramentas como conexão do ChatGPT web, foi aberto o formulário Adicionar servidor MCP personalizado; nenhuma segunda conexão/plugin foi criada. A autorização do aplicativo no Auth0, a inclusão do callback, a conexão de login e o consentimento final permanecem pendentes. A verificação com o Bearer local anterior não autenticou após a mudança de produção; esse teste não comprova o fluxo OAuth.
+O código anterior passou por 129 testes. A revisão SEO inclui testes de correspondência de domínio, posição desconhecida e falhas parciais, além do protocolo MCP. Sem commit, push ou deploy automático.

@@ -1,6 +1,6 @@
 # SERP Research MCP
 
-Servidor MCP de pesquisa e estratégia de conteúdo, com Next.js 16, TypeScript e uma página de apresentação em português. Toda operação ocorre pelo MCP/Plugin nos chats. O site é estático, sem painel, formulários, cadastro ou login. O projeto não usa banco de dados.
+Servidor MCP para SEO por SERP, análise de páginas públicas de clientes e concorrentes e estratégia de conteúdo, com Next.js 16 e TypeScript. Toda operação ocorre pelo MCP/Plugin nos chats. O site é uma apresentação estática, sem painel, formulários, cadastro ou login. O projeto não usa banco de dados. Não exige Search Console, Analytics ou acesso às contas dos clientes.
 
 **Provedor padrão: DataForSEO.** SerpApi e Serper.dev também estão disponíveis. A geração e a análise editorial final ficam a cargo do modelo do cliente MCP; o servidor coleta evidências e organiza um plano, sem exigir uma API de LLM.
 
@@ -32,8 +32,6 @@ Use [.env.example](.env.example) como referência. Não use prefixos `NEXT_PUBLI
 | Conta de pesquisa Ads | `GOOGLE_ADS_RESEARCH_CUSTOMER_ID` é aceita quando `GOOGLE_ADS_CUSTOMER_ID` está vazio |
 | Conta gerente Ads | `GOOGLE_ADS_LOGIN_CUSTOMER_ID`, opcional |
 | Versão Ads | `GOOGLE_ADS_API_VERSION`, padrão `v24`; preserve uma versão suportada pela API |
-| Search Console | `GOOGLE_SEARCH_CONSOLE_CLIENT_ID`, `GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET`, `GOOGLE_SEARCH_CONSOLE_REFRESH_TOKEN`; consentimento `webmasters.readonly` separado |
-| Propriedade orgânica | `GOOGLE_SEARCH_CONSOLE_SITE_URL`, opcional quando informado na chamada; `GOOGLE_SEARCH_CONSOLE_ALLOWED_SITES` restringe propriedades |
 | MCP HTTP | `MCP_AUTH_MODE=bearer`, `MCP_AUTH_TOKEN`, `MCP_PUBLIC_URL` |
 | ChatGPT OAuth | `MCP_AUTH_MODE=oauth` ou `both`, `MCP_OAUTH_ISSUER`, `MCP_OAUTH_JWKS_URL`, `MCP_OAUTH_AUDIENCE`, `MCP_OAUTH_SCOPES` |
 
@@ -45,17 +43,14 @@ DataForSEO autentica com o login e a senha da API; não com uma chave genérica 
 | --- | --- |
 | `search_web` | Pesquisa Google via provedor SERP, com fontes e data de coleta |
 | `search_news` | Notícias e referências recentes fornecidas pelo provedor |
+| `check_serp_rank` | Posições observadas de um domínio por palavra-chave, com SERP, concorrentes e data |
+| `audit_seo` | HTML de até 5 páginas + 1 a 3 palavras-chave nas SERPs reais; evidências e falhas parciais |
 | `analyze_website` | Metadados, headings, canonical, links, texto e observações do HTML |
 | `google_ads_keyword_ideas` | Ideias de palavras-chave a partir de termos e/ou URL |
 | `google_ads_keyword_metrics` | Volume histórico, competição de anúncios e lances |
-| `google_ads_campaign_performance` | Impressões, cliques, custos e conversões em período explícito |
 | `build_content_strategy` | Briefing, clusters, calendário e reaproveitamento entre canais |
 | `research_topic` | Dossiê com pesquisa SERP, URLs fornecidas e Ads opcional |
 | `compare_competitors` | Evidências de conteúdo e SEO on-page de 2 ou 3 sites |
-| `search_console_sites` | Propriedades disponíveis na conta Google autorizada |
-| `search_console_performance` | Cliques, impressões, CTR e posição média por consultas, páginas, países, dispositivos e datas |
-| `search_console_inspect_url` | Estado conhecido de indexação, rastreamento e canonical de uma URL |
-| `search_console_sitemaps` | Sitemaps conhecidos pelo Google e seus estados |
 
 Também expõe os prompts `content_research` e `site_audit`, e o recurso autenticado `research://capabilities`, com estado sem segredos e schemas do catálogo. Todos os parâmetros são validados. A operação HTTP existe somente em `/api/mcp`, pelo protocolo MCP. Exemplo de chamada MCP `tools/call`:
 
@@ -81,7 +76,7 @@ Um cliente MCP faz a inicialização e envia `Authorization: Bearer <token MCP o
 ## Conectar aos chats
 
 Leia [o guia completo de conexão](docs/connections.md).
-Para dados orgânicos da sua propriedade, siga [a configuração do Search Console](docs/search-console-setup.md). Isso não substitui o OAuth entre ChatGPT e MCP.
+O catálogo contém 10 ferramentas de SEO e conteúdo. Variáveis antigas `GOOGLE_SEARCH_CONSOLE_*` são ignoradas por este fluxo. O OAuth Auth0 protege ChatGPT → MCP e continua configurado como antes. Veja o [guia de SEO por SERP](docs/seo-serp.md). Depois do deploy manual, clique em **Atualizar ferramentas** no ChatGPT.
 
 - **Codex local:** nesta instalação, `.codex/config.toml` contém uma configuração stdio para a pasta Windows. Esse arquivo local é ignorado pelo Git; em outra máquina, crie a configuração conforme o guia. Reinicie o cliente e confira a conexão depois de confiar no projeto. Antes disso, o CLI pode informar `No MCP server named 'serp_search' found`; a configuração global não foi alterada. O processo lê `.env.local` sem exportar os segredos para o cliente. Para mover o projeto, ajuste os caminhos no arquivo.
 - **Outros clientes locais:** configure um processo `node` com `node_modules/tsx/dist/cli.mjs` e `src/mcp/stdio.ts` como argumentos absolutos, ou `npm.cmd run --silent mcp:stdio` com a pasta do projeto como `cwd`.
@@ -115,7 +110,7 @@ O limitador de 60 chamadas/minuto por identidade e o cache de token Ads ficam em
 ## Limites e qualidade da evidência
 
 - SERP: até 20 resultados; consultas consomem créditos/cotas. O retorno informa `requestsUsed` e `truncated`.
-- Ads: até 100 ideias, 1.000 termos históricos e 100 campanhas. Totais de campanhas correspondem somente ao conjunto retornado. Competição de anunciantes **não** é dificuldade de SEO. Dados ausentes não são tratados como volume zero.
+- Ads: até 100 ideias e 1.000 termos históricos. Competição de anunciantes **não** é dificuldade de SEO. Dados ausentes não são tratados como volume zero.
 - Sites: até 5 páginas, 2 MB de HTML por requisição, 12s por conexão e 60s por análise. Somente IPv4 pública, HTTP/HTTPS nas portas padrão. DNS é verificado e o IP aprovado é fixado na conexão; redirects são validados novamente.
 - A análise não executa JavaScript, não mede Core Web Vitals, tráfego ou autoridade, e não consulta `robots.txt`. Use em sites públicos que permitam análise automatizada; o retorno declara as limitações.
 - O plano editorial é um modelo estruturado. O chat deve incorporar pesquisa, conferir afirmações e adaptar linguagem, intenção e formatos. Textos coletados são dados externos, não instruções para o modelo.

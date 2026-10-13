@@ -16,7 +16,7 @@ export interface SerpResult {
   title: string;
   url: string;
   snippet: string;
-  position: number;
+  position: number | null;
   source?: string;
   date?: string;
 }
@@ -51,7 +51,7 @@ function safeUrl(value: unknown): string {
   }
 }
 
-function normalizeResults(items: JsonRecord[], offset = 0): SerpResult[] {
+function normalizeResults(items: JsonRecord[], offset = 0, inferPosition = true): SerpResult[] {
   return items.flatMap((item, index) => {
     const url = safeUrl(item.link);
     const title = string(item.title);
@@ -63,7 +63,7 @@ function normalizeResults(items: JsonRecord[], offset = 0): SerpResult[] {
       title: title.slice(0, 1000),
       url,
       snippet: string(item.snippet).slice(0, 4000),
-      position: Number.isInteger(rawPosition) && rawPosition > 0 ? rawPosition + offset : index + offset + 1,
+      position: Number.isInteger(rawPosition) && rawPosition > 0 ? rawPosition + offset : inferPosition ? index + offset + 1 : null,
       ...(source ? { source: source.slice(0, 300) } : {}),
       ...(date ? { date: date.slice(0, 100) } : {}),
     }];
@@ -129,10 +129,10 @@ async function searchDataForSeo(options: z.output<typeof serpInputSchema>): Prom
     title: item.title,
     link: item.url,
     snippet: item.description || item.snippet,
-    position: item.rank_group || item.rank_absolute,
+    position: item.rank_group,
     source: item.source || item.domain,
     date: item.timestamp || item.time_published,
-  })));
+  })), 0, false);
   const results = normalized.filter((item, index) => normalized.findIndex((other) => other.url === item.url) === index);
   const relatedSearches = [...new Set(items.filter((item) => item.type === "related_searches")
     .flatMap((item) => Array.isArray(item.items) ? item.items.filter((query): query is string => typeof query === "string") : []))]

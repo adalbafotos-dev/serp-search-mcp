@@ -29,8 +29,8 @@ Substitua `metodo-confirmado` por `none`, `client_secret_basic` ou `client_secre
 
 Instale o plugin na mesma conta/workspace em que vai usá-lo e abra uma conversa **Work** pela página inicial do ChatGPT. Não é necessário um botão “nova conversa” no painel do plugin. Selecione-o com @ no compositor. Se ele não aparecer, confira a instalação, conta, workspace, modo da conversa e a situação da conexão.
 
-Primeiro confirme a descoberta das ferramentas; depois peça uma pesquisa curta e verifique uma chamada real a search_web. Para Search Console, confirme separadamente as credenciais de [search-console-setup.md](search-console-setup.md). Não substitua falhas de conexão por métricas inventadas.
+Primeiro confirme a descoberta das ferramentas; depois peça uma pesquisa curta e verifique uma chamada real a search_web. O fluxo atual é [SEO por SERP](seo-serp.md), sem Search Console ou acesso às contas dos clientes. Não substitua falhas de conexão por métricas inventadas.
 
-Os dois consentimentos são diferentes: Auth0 autoriza ChatGPT → MCP; Google autoriza MCP → Search Console. Credenciais de Ads não autorizam Search Console automaticamente.
+Auth0 autoriza ChatGPT → MCP. O Google Ads usa as credenciais já configuradas no servidor para pesquisa de palavras-chave; não é necessário um novo consentimento Google para cada cliente.
 
 Fontes: [instalação e Work](https://developers.openai.com/plugins/quickstart), [autenticação MCP OpenAI](https://developers.openai.com/plugins/build/auth), [manifestos OAuth](https://developers.openai.com/plugins/build/plugins), [PKCE Auth0](https://auth0.com/docs/api/authentication/authorization-code-flow-with-pkce/authorize-with-pkce).

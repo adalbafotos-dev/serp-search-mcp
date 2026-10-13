@@ -1,9 +1,9 @@
 import { ArrowRight, BookOpen, Check, FileSearch, Globe2, Layers3, MessageSquare, PlugZap, Search, Sparkles } from "lucide-react";
 
 const capabilities = [
-  { icon: Search, number: "01", title: "Descubra o que importa.", description: "Pesquise resultados, notícias e perguntas na web. Encontre referências e entenda o contexto antes de criar.", tags: ["DataForSEO", "Pesquisa web", "Tendências"] },
+  { icon: Search, number: "01", title: "Veja o Google com dados.", description: "Consulte SERPs reais por palavra-chave. Identifique posições observadas, páginas concorrentes e oportunidades de conteúdo.", tags: ["DataForSEO", "SERP Google", "Concorrentes"] },
   { icon: Layers3, number: "02", title: "Dê contexto às palavras.", description: "Explore ideias, volumes históricos e dados do Google Ads para orientar suas escolhas de conteúdo.", tags: ["Google Ads", "Palavras-chave", "Intenção"] },
-  { icon: FileSearch, number: "03", title: "Transforme pesquisa em direção.", description: "Analise sites, compare conteúdos e organize pautas para blogs e redes sociais com apoio do seu chat.", tags: ["SEO on-page", "Blogs", "Redes sociais"] },
+  { icon: FileSearch, number: "03", title: "Analise os sites dos clientes.", description: "Examine páginas públicas, compare conteúdo e priorize melhorias de SEO. Transforme a pesquisa em pautas para blogs e redes sociais.", tags: ["SEO on-page", "Sites de clientes", "Conteúdo"] },
 ];
 
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
         <div className="hero-copy">
           <span className="eyebrow"><span /> PESQUISA PARA OS SEUS CHATS</span>
           <h1>Boas ideias<br />começam com<br /><em>boas perguntas.</em></h1>
-          <p className="hero-description">A web, os dados e o contexto que faltavam na sua conversa. Pesquise, analise e planeje conteúdos diretamente no chat.</p>
+          <p className="hero-description">SEO com SERPs reais e páginas públicas. Analise sites dos seus clientes, descubra concorrentes e planeje conteúdo diretamente no chat, sem conectar as contas deles.</p>
           <a className="discover-link" href="#capacidades">Conheça o SERP Research <ArrowRight size={17} /></a>
           <div className="hero-note"><PlugZap size={15} /><span>Conectado ao chat por MCP.</span></div>
         </div>

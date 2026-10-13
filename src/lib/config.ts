@@ -36,7 +36,6 @@ export function getPublicStatus() {
   const serpFields = provider === "dataforseo" ? ["DATAFORSEO_LOGIN", "DATAFORSEO_PASSWORD"] : provider === "serper" ? ["SERPER_API_KEY"] : ["SERPAPI_API_KEY"];
   const adsFields = ["GOOGLE_ADS_DEVELOPER_TOKEN", "GOOGLE_ADS_CLIENT_ID", "GOOGLE_ADS_CLIENT_SECRET", "GOOGLE_ADS_REFRESH_TOKEN", process.env.GOOGLE_ADS_CUSTOMER_ID?.trim() ? "GOOGLE_ADS_CUSTOMER_ID" : "GOOGLE_ADS_RESEARCH_CUSTOMER_ID"];
   const mode = process.env.MCP_AUTH_MODE || "bearer";
-  const searchConsoleFields = ["GOOGLE_SEARCH_CONSOLE_CLIENT_ID", "GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET", "GOOGLE_SEARCH_CONSOLE_REFRESH_TOKEN"];
   return {
     name: "SERP Research MCP",
     version: "1.0.0",
@@ -46,7 +45,6 @@ export function getPublicStatus() {
     integrations: [
       { id: "serp", name: provider === "dataforseo" ? "DataForSEO" : provider === "serper" ? "Serper.dev" : "SerpApi", configured: ["dataforseo", "serpapi", "serper"].includes(provider) && serpFields.every(key => Boolean(process.env[key]?.trim())), fields: serpFields },
       { id: "google_ads", name: "Google Ads", configured: adsFields.every(key => Boolean(process.env[key]?.trim())), fields: adsFields },
-      { id: "search_console", name: "Google Search Console", configured: searchConsoleFields.every(key => Boolean(process.env[key]?.trim())), fields: searchConsoleFields },
       { id: "website", name: "Análise de sites", configured: true, fields: [] as string[] },
     ],
   };

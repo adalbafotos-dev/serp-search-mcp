@@ -99,6 +99,16 @@ describe("SERP provider contracts", () => {
     expect(result.results).toHaveLength(1);
     expect(result.truncated).toBe(true);
     expect(result.notes?.[0]).toContain("parciais");
+    expect(result.results[0]?.position).toBeNull();
+  });
+
+  it("does not use absolute SERP rank as organic rank when rank_group is absent", async () => {
+    vi.stubEnv("SERP_PROVIDER", "dataforseo");
+    fetchMock.mockResolvedValueOnce(json({ status_code: 20000, tasks: [{ status_code: 20000, result: [{ items: [
+      { type: "organic", title: "Fonte", url: "https://example.com", rank_absolute: 8 },
+    ] }] }] }));
+    const result = await serp.searchSerp({ query: "seo" });
+    expect(result.results[0]?.position).toBeNull();
   });
 
   it("treats DataForSEO no-results as empty evidence and rejects malformed task envelopes", async () => {
