@@ -1,0 +1,8 @@
+.env*
+!.env.example
+.codex/
+artifacts/
+coverage/
+*.log
+*.tsbuildinfo
+docs/interface.jpg
