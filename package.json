@@ -13,6 +13,7 @@
     "test": "vitest run",
     "mcp:stdio": "tsx src/mcp/stdio.ts",
     "verify": "tsx scripts/verify.ts",
+    "vercel:prepare-env": "node scripts/prepare-vercel-env.mjs",
     "setup": "node scripts/setup.mjs",
     "check": "npm run typecheck && npm test && npm run build"
   },

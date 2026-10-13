@@ -76,7 +76,7 @@ Um cliente MCP faz a inicialização e envia `Authorization: Bearer <token MCP o
 
 Leia [o guia completo de conexão](docs/connections.md).
 
-- **Codex local:** `.codex/config.toml` já contém uma configuração stdio para esta pasta Windows. Reinicie o cliente e confira a conexão depois de confiar no projeto. Antes disso, o CLI pode informar `No MCP server named 'serp_search' found`; a configuração global não foi alterada. O processo lê `.env.local` sem exportar os segredos para o cliente. Para mover o projeto, ajuste os caminhos no arquivo.
+- **Codex local:** nesta instalação, `.codex/config.toml` contém uma configuração stdio para a pasta Windows. Esse arquivo local é ignorado pelo Git; em outra máquina, crie a configuração conforme o guia. Reinicie o cliente e confira a conexão depois de confiar no projeto. Antes disso, o CLI pode informar `No MCP server named 'serp_search' found`; a configuração global não foi alterada. O processo lê `.env.local` sem exportar os segredos para o cliente. Para mover o projeto, ajuste os caminhos no arquivo.
 - **Outros clientes locais:** configure um processo `node` com `node_modules/tsx/dist/cli.mjs` e `src/mcp/stdio.ts` como argumentos absolutos, ou `npm.cmd run --silent mcp:stdio` com a pasta do projeto como `cwd`.
 - **Codex por HTTP:** use `/api/mcp` e `bearer_token_env_var = "MCP_AUTH_TOKEN"`. O cliente precisa receber essa variável em seu próprio ambiente.
 - **Pacote plugin:** [plugin/](plugin/) contém manifesto, configuração HTTP local e uma skill de pesquisa. O servidor deve estar executando; o pacote não incorpora as credenciais. Para OAuth remoto, troque a URL e remova `bearer_token_env_var`.
@@ -87,6 +87,8 @@ Exemplo de pedido no chat:
 > Pesquise oportunidades sobre meu tema no Brasil. Analise estas URLs, consulte volumes no Google Ads e proponha um calendário de quatro semanas para blog, Instagram e LinkedIn. Mostre fontes, dados observados e hipóteses separadamente.
 
 ## Produção
+
+Destino GitHub: [adalbafotos-dev/serp-search-mcp](https://github.com/adalbafotos-dev/serp-search-mcp). A publicação será manual para permitir escolher a conta e a autoria. Consulte [commit, push e deploy manual](docs/publicacao-manual.md).
 
 Para **Vercel**, o projeto inclui `vercel.json`, build com `npm run build`, instalação com `npm ci`, página estática e endpoint Node.js stateless com duração de até 120s. As chamadas não dependem de sessões persistentes, de banco de dados ou de escrita no disco. Consulte [o guia de produção na Vercel](docs/vercel.md) para as variáveis, domínio e conexão dos clientes.
 

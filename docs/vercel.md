@@ -10,6 +10,18 @@ O endpoint já usa o runtime Node.js e exporta `maxDuration = 120`. A página é
 
 ## Variáveis em Production
 
+Para este deploy, a origem é `https://serp-search-mcp.vercel.app` e o endpoint MCP é `https://serp-search-mcp.vercel.app/api/mcp`.
+
+Foi preparado um arquivo local privado, `.env.vercel.production`, com as credenciais existentes, `MCP_AUTH_MODE=bearer` e a origem HTTPS correta. No projeto da conta Vercel escolhida, abra **Settings → Environment Variables**, importe o arquivo, selecione **Production** e salve. Depois faça **Redeploy** do deployment de produção. O arquivo é ignorado pelo Git e pelos uploads de código da Vercel. Essa importação habilita clientes com Bearer; OAuth externo para ChatGPT continua sendo uma configuração separada.
+
+Para preparar o arquivo em outra instalação, com o ambiente local já preenchido:
+
+```powershell
+npm run vercel:prepare-env -- https://serp-search-mcp.vercel.app
+```
+
+O script não sobrescreve um arquivo de importação existente e não publica as variáveis automaticamente. Não imprime seus valores.
+
 Cadastre os valores de `.env.local` nas **Environment Variables** do projeto, aplicadas a Production. A `.vercelignore` exclui os arquivos de segredos, configurações locais do Codex e ZIPs. O arquivo `.env.local` não deve ser enviado como código.
 
 | Grupo | Variáveis |
