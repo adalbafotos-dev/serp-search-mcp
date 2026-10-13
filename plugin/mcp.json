@@ -6,7 +6,25 @@
       "url": "https://serp-search-mcp.vercel.app/api/mcp",
       "extensions": {
         "com.openai": {
-          "auth": { "type": "api_key", "headerScheme": "bearer" }
+          "auth": {
+            "type": "oauth",
+            "client": {
+              "mode": "provided",
+              "clientId": "tpc_fFmkttyLRH2m8iZhX56LS9",
+              "tokenEndpointAuthMethod": "client_secret_post"
+            },
+            "authorizationServerBase": "https://adalbapro.us.auth0.com/",
+            "authorizationUrl": "https://adalbapro.us.auth0.com/authorize",
+            "tokenUrl": "https://adalbapro.us.auth0.com/oauth/token",
+            "resource": "https://serp-search-mcp.vercel.app/api/mcp",
+            "baseScopes": [
+              "research:read"
+            ],
+            "defaultScopes": [
+              "research:read"
+            ],
+            "oidcEnabled": false
+          }
         }
       }
     }

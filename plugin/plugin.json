@@ -1,27 +1,35 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-  "name": "serp-search-mcp",
-  "version": "1.0.2",
+  "author": {
+    "email": "scalbeto@gmail.com",
+    "name": "ADALBERTO Escalante"
+  },
   "description": "Pesquisa web, análise de sites e dados do Google Ads para estratégias de conteúdo.",
-  "author": { "name": "Adalba Pro" },
-  "homepage": "https://serp-search-mcp.vercel.app/",
-  "repository": "https://github.com/adalbafotos-dev/serp-search-mcp",
   "extensions": {
     "com.openai": {
       "interface": {
-        "displayName": "SERP Search MCP",
-        "shortDescription": "Pesquisa e conteúdo com dados",
-        "longDescription": "Pesquise a web, analise sites e consulte palavras-chave e desempenho do Google Ads. Transforme fontes e métricas em propostas para blogs, sites e redes sociais.",
-        "developerName": "Adalba Pro",
+        "brandColor": "#7358D9",
+        "capabilities": [
+          "Pesquisa web",
+          "Análise de sites",
+          "Consulta ao Google Ads",
+          "Estratégia de conteúdo"
+        ],
         "category": "Productivity",
-        "capabilities": ["Pesquisa web", "Análise de sites", "Consulta ao Google Ads", "Estratégia de conteúdo"],
         "defaultPrompt": [
           "Pesquise meu tema e proponha uma estratégia de conteúdo com fontes.",
           "Analise este site e identifique oportunidades para o blog.",
           "Compare palavras-chave e transforme as oportunidades em pautas para redes sociais."
         ],
-        "brandColor": "#7358D9"
+        "developerName": "ADALBERTO Escalante",
+        "displayName": "SERP Search MCP",
+        "longDescription": "Pesquise a web, analise sites e consulte palavras-chave e desempenho do Google Ads. Transforme fontes e métricas em propostas para blogs, sites e redes sociais.",
+        "shortDescription": "Pesquisa e conteúdo com dados"
       }
     }
-  }
+  },
+  "homepage": "https://serp-search-mcp.vercel.app/",
+  "name": "serp-search-mcp",
+  "repository": "https://github.com/adalbafotos-dev/serp-search-mcp",
+  "version": "1.0.4"
 }
