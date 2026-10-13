@@ -39,9 +39,9 @@ O endpoint HTTP funciona sem sessão persistente e devolve respostas JSON. Use u
 
 ## Pacote do plugin
 
-A pasta `plugin/` contém o formato de compatibilidade Codex suportado: `.codex-plugin/plugin.json`, `.mcp.json` e `skills/content-research/SKILL.md`. O manifesto referencia caminhos relativos à raiz do pacote. O formato portátil novo usa `plugin.json` e `mcp.json`; este pacote utiliza o formato Codex para distribuição local. [Empacotar plugins](https://developers.openai.com/plugins/build/plugins).
+A pasta `plugin/` contém os manifestos portáteis `plugin.json` e `mcp.json`, a skill `skills/content-research/SKILL.md` e os arquivos de compatibilidade Codex `.codex-plugin/plugin.json` e `.mcp.json`. Os dois formatos apontam para o mesmo servidor e não contêm segredos. [Empacotar plugins](https://developers.openai.com/plugins/build/plugins).
 
-`plugin/.mcp.json` aponta para `http://127.0.0.1:3000/api/mcp`, adequado ao servidor local deste projeto. Para distribuir ou usar hospedagem remota, altere somente o campo `url` para a URL HTTPS real, como `https://seu-dominio.example/api/mcp`.
+Os manifestos MCP apontam para `https://serp-search-mcp.vercel.app/api/mcp`. O portátil declara API key com esquema Bearer em `extensions.com.openai.auth`; essa declaração não contém o token e não substitui OAuth no ChatGPT. Se trocar de hospedagem, sincronize a URL nos dois manifestos.
 
 O campo `bearer_token_env_var: "MCP_AUTH_TOKEN"` evita embutir o segredo e é suportado no formato de MCP de plugins documentado pela OpenAI. [Autenticar MCPs de plugins](https://developers.openai.com/api/docs/guides/agents-api/tools/plugins). Para uma conexão exclusivamente OAuth, remova esse campo e deixe o cliente realizar a autorização. O pacote não instala o servidor, Node.js ou dependências e não inclui `.env.local`.
 
@@ -52,6 +52,8 @@ O ChatGPT executado remotamente não alcança o `localhost` deste computador. Pa
 O ChatGPT não apresenta uma chave de API personalizada nem um token Bearer fixo nessa conexão. Configure OAuth para manter as APIs protegidas; não selecione autenticação ausente para contornar o token. A integração deve usar authorization code com PKCE `S256`, discovery e um cliente pré-registrado, CIMD ou DCR. [Autenticação MCP da OpenAI](https://developers.openai.com/plugins/build/auth).
 
 ### Configurar o servidor de autorização externo
+
+Para a instalação pessoal na Vercel, siga [a configuração Auth0 passo a passo](chatgpt-auth0-setup.md), mantendo a identidade do plugin e restringindo o subject autorizado.
 
 Este projeto valida tokens JWT de um provedor externo; ele não cria um provedor de identidade, tela de consentimento ou endpoint de emissão de tokens. Configure:
 

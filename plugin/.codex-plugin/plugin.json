@@ -1,12 +1,12 @@
 {
   "name": "serp-search-mcp",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Pesquisa web, análise de sites e dados do Google Ads para estratégias de conteúdo.",
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "SERP Search MCP",
-    "shortDescription": "Pesquisa web e estratégia de conteúdo",
+    "shortDescription": "Pesquisa e conteúdo com dados",
     "longDescription": "Pesquise a web, analise sites e consulte palavras-chave e desempenho do Google Ads. Transforme fontes e métricas em propostas para blogs, sites e redes sociais.",
     "developerName": "Adalba Pro",
     "category": "Productivity",

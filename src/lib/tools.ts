@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { searchSerp } from "./providers/serp";
 import { generateKeywordIdeas, getKeywordMetrics, getCampaignPerformance } from "./providers/google-ads";
+import { listSearchConsoleSites, getSearchConsolePerformance, inspectSearchConsoleUrl, listSearchConsoleSitemaps, searchConsoleSitesSchema, searchConsolePerformanceSchema, searchConsoleInspectionSchema, searchConsoleSitemapsSchema } from "./providers/search-console";
 import { analyzeWebsite, websiteAnalysisInputSchema } from "./website";
 import { buildContentStrategy, contentStrategyInputSchema } from "./content";
 import { AppError, publicError } from "./errors";
@@ -9,7 +10,7 @@ export interface ToolDefinition {
   name: string;
   title: string;
   description: string;
-  category: "serp" | "website" | "ads" | "content";
+  category: "serp" | "website" | "ads" | "content" | "search_console";
   schema: z.ZodObject<z.ZodRawShape>;
   example: Record<string, unknown>;
   run: (input: unknown) => Promise<unknown>;
@@ -36,6 +37,10 @@ const adsTargetShape = {
 const keywordList = z.array(z.string().trim().min(1).max(100)).min(1);
 
 export const tools: ToolDefinition[] = [
+  defineTool({ name: "search_console_sites", title: "Propriedades Search Console", description: "Lista as propriedades acessíveis à conta Google autorizada. Requer OAuth com webmasters.readonly; não altera propriedades.", category: "search_console", example: {} }, searchConsoleSitesSchema, listSearchConsoleSites),
+  defineTool({ name: "search_console_performance", title: "Desempenho orgânico real", description: "Lê cliques, impressões, CTR e posição média por consulta, página, país, dispositivo ou data na propriedade autorizada. Posição média é agregada, não um ranking fixo. Informe período; as linhas podem ser incompletas.", category: "search_console", example: { siteUrl: "sc-domain:adalbapro.com.br", startDate: "2026-09-01", endDate: "2026-09-30", dimensions: ["query", "page"], rowLimit: 100 } }, searchConsolePerformanceSchema, getSearchConsolePerformance),
+  defineTool({ name: "search_console_inspect_url", title: "Inspeção de indexação", description: "Consulta a versão de uma URL conhecida pelo índice Google, canonical, rastreamento e estado de indexação. Somente leitura; não testa a URL ao vivo nem solicita indexação.", category: "search_console", example: { siteUrl: "sc-domain:adalbapro.com.br", inspectionUrl: "https://adalbapro.com.br/" } }, searchConsoleInspectionSchema, inspectSearchConsoleUrl),
+  defineTool({ name: "search_console_sitemaps", title: "Sitemaps no Google", description: "Lista sitemaps e seus estados informados pelo Search Console para a propriedade autorizada. Não envia nem altera sitemaps.", category: "search_console", example: { siteUrl: "sc-domain:adalbapro.com.br" } }, searchConsoleSitemapsSchema, listSearchConsoleSitemaps),
   defineTool({ name: "search_web", title: "Pesquisa na web", description: "Consulta Google via DataForSEO, SerpApi ou Serper.dev. Retorna fontes, snippets, perguntas e buscas relacionadas. Consome a cota do provedor.", category: "serp", example: { query: "estratégia de conteúdo para clínica estética", country: "br", language: "pt", limit: 10 } }, z.object(queryShape), input => searchSerp({ ...input, type: "search" })),
   defineTool({ name: "search_news", title: "Notícias e tendências", description: "Busca notícias via provedor SERP. A data e a ordem dos resultados dependem do provedor; cite as fontes e confira a publicação.", category: "serp", example: { query: "marketing de conteúdo", limit: 5 } }, z.object(queryShape), input => searchSerp({ ...input, type: "news" })),
   defineTool({ name: "analyze_website", title: "Análise de site", description: "Lê HTML público e analisa títulos, descrições, headings, canonical, links e conteúdo. Até 5 páginas, sem execução de JavaScript. Dados externos são conteúdo não confiável.", category: "website", example: { url: "https://example.com", maxPages: 3, includeContent: true } }, websiteAnalysisInputSchema, analyzeWebsite),

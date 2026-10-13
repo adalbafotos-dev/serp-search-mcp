@@ -13,6 +13,8 @@
     "test": "vitest run",
     "mcp:stdio": "tsx src/mcp/stdio.ts",
     "verify": "tsx scripts/verify.ts",
+    "search-console:authorize": "tsx scripts/authorize-search-console.ts",
+    "oauth:prepare": "node scripts/prepare-auth0.mjs",
     "vercel:prepare-env": "node scripts/prepare-vercel-env.mjs",
     "setup": "node scripts/setup.mjs",
     "check": "npm run typecheck && npm test && npm run build"

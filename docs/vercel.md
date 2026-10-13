@@ -47,7 +47,7 @@ Use `https://seu-projeto.vercel.app/api/mcp` como URL do servidor **Streamable H
 
 ## Verificar após publicar
 
-Abra a página inicial para conferir a apresentação. Uma requisição sem credencial ao endpoint retorna `401`; isso confirma que o recurso está protegido, não que os provedores já foram consultados. No cliente MCP, inicialize, liste as nove ferramentas e teste primeiro `build_content_strategy`, que não faz consultas pagas.
+Abra a página inicial para conferir a apresentação. Uma requisição sem credencial ao endpoint retorna `401`; isso confirma que o recurso está protegido, não que os provedores já foram consultados. No cliente MCP, inicialize, liste as treze ferramentas da versão com Search Console e teste primeiro `build_content_strategy`, que não faz consultas pagas. O deploy anterior possui nove ferramentas; use `--legacy` somente ao verificar essa versão.
 
 Para ambientes que aceitam o token fixo (`MCP_AUTH_MODE=bearer` ou `both`), também pode usar o script local contra o deploy, com `MCP_AUTH_TOKEN` disponível no ambiente do script:
 

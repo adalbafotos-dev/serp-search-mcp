@@ -28,7 +28,8 @@ async function main() {
   await client.connect(new StreamableHTTPClientTransport(url, { requestInit: { headers: { Authorization: `Bearer ${token}` } } }));
   try {
     const catalog = await client.listTools();
-    if (catalog.tools.length !== 9) throw new Error("Catálogo MCP incompleto.");
+    const expectedTools = process.argv.includes("--legacy") ? 9 : 13;
+    if (catalog.tools.length !== expectedTools) throw new Error("Catálogo MCP incompleto ou deploy anterior. Use --legacy somente para verificar a versão anterior.");
     const plan = await client.callTool({ name: "build_content_strategy", arguments: { topic: "marketing de conteúdo", weeks: 1, channels: ["blog", "instagram"] } });
     if (plan.isError || !plan.structuredContent) throw new Error("Falha na ferramenta editorial.");
     const resources = await client.listResources();
@@ -61,6 +62,12 @@ async function main() {
         if (result.isError) { process.exitCode = 1; break; }
       }
     }
+    if (process.argv.includes("--search-console")) {
+      const result = await client.callTool({ name: "search_console_sites", arguments: {} });
+      const content = record(result.structuredContent);
+      console.log(JSON.stringify({ check: "search_console_sites", ok: !result.isError, count: Array.isArray(content.sites) ? content.sites.length : 0, ...(result.isError ? { error: result.content } : {}) }));
+      if (result.isError) process.exitCode = 1;
+    }
   } finally { await client.close(); }
 
   const local = new Client({ name: "stdio-verification", version: "1.0.0" });
@@ -69,7 +76,7 @@ async function main() {
   try {
     const catalog = await local.listTools();
     const result = await local.callTool({ name: "build_content_strategy", arguments: { topic: "pesquisa web", weeks: 1, channels: ["blog"] } });
-    if (catalog.tools.length !== 9 || result.isError) throw new Error("Falha na verificação stdio.");
+    if (catalog.tools.length !== 13 || result.isError) throw new Error("Falha na verificação stdio.");
     console.log(JSON.stringify({ check: "MCP stdio", ok: true, tools: catalog.tools.length, editorialResult: true }));
   } finally { await local.close(); }
 }

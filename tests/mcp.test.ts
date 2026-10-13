@@ -50,6 +50,7 @@ describe("MCP protocol using the SDK client", () => {
       expect(client.getServerVersion()).toEqual({ name: "serp-research-mcp", version: "1.0.0" });
       const listed = await client.listTools();
       expect(listed.tools.map(tool => tool.name)).toEqual(expect.arrayContaining(["search_web", "search_news", "analyze_website", "google_ads_keyword_ideas", "google_ads_keyword_metrics", "google_ads_campaign_performance", "build_content_strategy", "research_topic", "compare_competitors"]));
+      expect(listed.tools.map(tool => tool.name)).toEqual(expect.arrayContaining(["search_console_sites", "search_console_performance", "search_console_inspect_url", "search_console_sitemaps"]));
       expect(listed.tools.every(tool => tool.annotations?.readOnlyHint && !tool.annotations.destructiveHint)).toBe(true);
       const result = await client.callTool({ name: "build_content_strategy", arguments: planningInput });
       expect(result.isError).not.toBe(true);

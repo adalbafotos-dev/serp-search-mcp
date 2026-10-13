@@ -32,6 +32,8 @@ Use [.env.example](.env.example) como referência. Não use prefixos `NEXT_PUBLI
 | Conta de pesquisa Ads | `GOOGLE_ADS_RESEARCH_CUSTOMER_ID` é aceita quando `GOOGLE_ADS_CUSTOMER_ID` está vazio |
 | Conta gerente Ads | `GOOGLE_ADS_LOGIN_CUSTOMER_ID`, opcional |
 | Versão Ads | `GOOGLE_ADS_API_VERSION`, padrão `v24`; preserve uma versão suportada pela API |
+| Search Console | `GOOGLE_SEARCH_CONSOLE_CLIENT_ID`, `GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET`, `GOOGLE_SEARCH_CONSOLE_REFRESH_TOKEN`; consentimento `webmasters.readonly` separado |
+| Propriedade orgânica | `GOOGLE_SEARCH_CONSOLE_SITE_URL`, opcional quando informado na chamada; `GOOGLE_SEARCH_CONSOLE_ALLOWED_SITES` restringe propriedades |
 | MCP HTTP | `MCP_AUTH_MODE=bearer`, `MCP_AUTH_TOKEN`, `MCP_PUBLIC_URL` |
 | ChatGPT OAuth | `MCP_AUTH_MODE=oauth` ou `both`, `MCP_OAUTH_ISSUER`, `MCP_OAUTH_JWKS_URL`, `MCP_OAUTH_AUDIENCE`, `MCP_OAUTH_SCOPES` |
 
@@ -50,6 +52,10 @@ DataForSEO autentica com o login e a senha da API; não com uma chave genérica 
 | `build_content_strategy` | Briefing, clusters, calendário e reaproveitamento entre canais |
 | `research_topic` | Dossiê com pesquisa SERP, URLs fornecidas e Ads opcional |
 | `compare_competitors` | Evidências de conteúdo e SEO on-page de 2 ou 3 sites |
+| `search_console_sites` | Propriedades disponíveis na conta Google autorizada |
+| `search_console_performance` | Cliques, impressões, CTR e posição média por consultas, páginas, países, dispositivos e datas |
+| `search_console_inspect_url` | Estado conhecido de indexação, rastreamento e canonical de uma URL |
+| `search_console_sitemaps` | Sitemaps conhecidos pelo Google e seus estados |
 
 Também expõe os prompts `content_research` e `site_audit`, e o recurso autenticado `research://capabilities`, com estado sem segredos e schemas do catálogo. Todos os parâmetros são validados. A operação HTTP existe somente em `/api/mcp`, pelo protocolo MCP. Exemplo de chamada MCP `tools/call`:
 
@@ -75,11 +81,12 @@ Um cliente MCP faz a inicialização e envia `Authorization: Bearer <token MCP o
 ## Conectar aos chats
 
 Leia [o guia completo de conexão](docs/connections.md).
+Para dados orgânicos da sua propriedade, siga [a configuração do Search Console](docs/search-console-setup.md). Isso não substitui o OAuth entre ChatGPT e MCP.
 
 - **Codex local:** nesta instalação, `.codex/config.toml` contém uma configuração stdio para a pasta Windows. Esse arquivo local é ignorado pelo Git; em outra máquina, crie a configuração conforme o guia. Reinicie o cliente e confira a conexão depois de confiar no projeto. Antes disso, o CLI pode informar `No MCP server named 'serp_search' found`; a configuração global não foi alterada. O processo lê `.env.local` sem exportar os segredos para o cliente. Para mover o projeto, ajuste os caminhos no arquivo.
 - **Outros clientes locais:** configure um processo `node` com `node_modules/tsx/dist/cli.mjs` e `src/mcp/stdio.ts` como argumentos absolutos, ou `npm.cmd run --silent mcp:stdio` com a pasta do projeto como `cwd`.
 - **Codex por HTTP:** use `/api/mcp` e `bearer_token_env_var = "MCP_AUTH_TOKEN"`. O cliente precisa receber essa variável em seu próprio ambiente.
-- **Pacote plugin:** [plugin/](plugin/) contém manifesto, configuração HTTP local e uma skill de pesquisa. O servidor deve estar executando; o pacote não incorpora as credenciais. Para OAuth remoto, troque a URL e remova `bearer_token_env_var`.
+- **Pacote plugin:** [plugin/](plugin/) contém manifestos portáteis, compatibilidade Codex e uma skill de pesquisa, apontando para o MCP de produção na Vercel. O pacote não incorpora credenciais. O servidor atual aceita Bearer; conectar no ChatGPT exige configurar OAuth e atualizar a autenticação declarada no pacote.
 - **ChatGPT remoto:** publique o projeto em HTTPS e configure OAuth no provedor de identidade externo. `localhost` e um token Bearer fixo não concluem essa conexão. O projeto já valida JWT, issuer, audience, validade, subjects opcionais e scopes; a emissão dos tokens e o cadastro do cliente ficam no provedor OAuth.
 
 Exemplo de pedido no chat:
